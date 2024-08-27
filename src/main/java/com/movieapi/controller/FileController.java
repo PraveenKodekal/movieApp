@@ -19,32 +19,30 @@ import com.movieapi.service.impl.FileServiceImpl;
 
 import jakarta.servlet.http.HttpServletResponse;
 
-@RestController
+@RestController("file")
 public class FileController {
 	@Autowired
 	private final FileServiceImpl fileService;
+
 	public FileController(FileServiceImpl fileService) {
-		this.fileService= fileService;
+		this.fileService = fileService;
 	}
-	
+
 	@Value("${project.poster}")
 	private String path;
-	
+
 	@PostMapping("/upload")
-	public ResponseEntity<String> uploadFile(@RequestPart MultipartFile file)throws  IOException{
-		String uploadedFile=fileService.uploadFile(path, file);
+	public ResponseEntity<String> uploadFile(@RequestPart MultipartFile file) throws IOException {
+		String uploadedFile = fileService.uploadFile(path, file);
 		return ResponseEntity.ok("fileUploaded : " + uploadedFile);
-		
+
 	}
-	
+
 	@GetMapping("/{fileName}")
-	public void serveFileHandler(@PathVariable String fileName, HttpServletResponse response) throws IOException
-	{
-		InputStream resourceFile=fileService.getResourceFile(path, fileName);
+	public void serveFileHandler(@PathVariable String fileName, HttpServletResponse response) throws IOException {
+		InputStream resourceFile = fileService.getResourceFile(path, fileName);
 		response.setContentType(MediaType.IMAGE_PNG_VALUE);
 		StreamUtils.copy(resourceFile, response.getOutputStream());
 	}
-	
-	
 
 }
