@@ -11,13 +11,14 @@ public class MovieDto {
 	
 	private Integer movieId;
 	
-	@Column(nullable = false)
 	@NotBlank(message = "Please fill appropriate field")
 	private String movieName;
-	@Column(nullable = false)
+	
+	
 	@NotBlank(message = "Please fill appropriate field")
 	private String productionHouse;
-	@Column(nullable = false)
+	
+	
 	@NotBlank(message = "Please fill appropriate field")
 	private String director;
 	
@@ -25,15 +26,12 @@ public class MovieDto {
 	
 	private Set<String> movieCasting;
 	
-	@Column(nullable = false)
-	
 	private Integer releaseYear;
 	
-	@Column(nullable = false)
 	@NotBlank(message = "Please fill appropriate field")
 	private String poster;
 	
-	
+	@NotBlank(message = "Please fill appropriate field")
 	private String posterUrl;
 	
 	
@@ -82,7 +80,7 @@ public class MovieDto {
 
 
 	public void setMovieName(String movieName) {
-		movieName = movieName;
+		this.movieName = movieName;
 	}
 
 
@@ -92,7 +90,7 @@ public class MovieDto {
 
 
 	public void setProductionHouse(String productionHouse) {
-		productionHouse = productionHouse;
+		this.productionHouse = productionHouse;
 	}
 
 

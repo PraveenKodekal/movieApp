@@ -19,21 +19,22 @@ public class Movies {
 	
 	@Column(nullable = false)
 	@NotBlank(message = "Please fill appropriate field")
-	private String MovieName;
+	private String movieName;
+	
 	@Column(nullable = false)
 	@NotBlank(message = "Please fill appropriate field")
-	private String ProductionHouse;
+	private String productionHouse;
+	
 	@Column(nullable = false)
 	@NotBlank(message = "Please fill appropriate field")
 	private String director;
 	
 	
 	@ElementCollection
-	@CollectionTable(name="movie.cast")
+	@CollectionTable(name="movieCast")
 	private Set<String> movieCasting;
 	
 	@Column(nullable = false)
-	
 	private Integer releaseYear;
 	
 	@Column(nullable = false)
@@ -41,12 +42,15 @@ public class Movies {
 	private String poster;
 	
 	
+	public Movies() {}
+	
+	
 	public Movies(Integer movieId, String movieName, String productionHouse, String director, Set<String> movieCasting,
 			Integer releaseYear, String poster) {
 		super();
 		this.movieId = movieId;
-		MovieName = movieName;
-		ProductionHouse = productionHouse;
+		this.movieName = movieName;
+		this.productionHouse = productionHouse;
 		this.director = director;
 		this.movieCasting = movieCasting;
 		this.releaseYear = releaseYear;
@@ -65,22 +69,22 @@ public class Movies {
 
 
 	public String getMovieName() {
-		return MovieName;
+		return movieName;
 	}
 
 
 	public void setMovieName(String movieName) {
-		MovieName = movieName;
+		this.movieName = movieName;
 	}
 
 
 	public String getProductionHouse() {
-		return ProductionHouse;
+		return productionHouse;
 	}
 
 
 	public void setProductionHouse(String productionHouse) {
-		ProductionHouse = productionHouse;
+		this.productionHouse = productionHouse;
 	}
 
 
