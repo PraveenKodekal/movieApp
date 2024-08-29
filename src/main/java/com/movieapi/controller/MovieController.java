@@ -20,6 +20,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.movieapi.dto.MovieDto;
+import com.movieapi.exception.EmptyFileException;
+import com.movieapi.exception.FileAlreadyExistsException;
 import com.movieapi.service.impl.MovieServiceImpl;
 
 @RestController
@@ -36,7 +38,12 @@ public class MovieController {
 	
 	@PostMapping("/addMovie")
 	public ResponseEntity<MovieDto> addMovieHandler(@RequestPart MultipartFile file,
-													@RequestPart String movieDto) throws IOException{
+													@RequestPart String movieDto) throws IOException, EmptyFileException{
+		
+		if(file.isEmpty()) {
+			throw new EmptyFileException("File is Empty, upload new file");
+		}
+		
 		// convert String to json
 		MovieDto dto= convertToMovieDto(movieDto);
 		return new ResponseEntity<>(movieService.addMovie(dto, file),HttpStatus.CREATED);
@@ -46,6 +53,7 @@ public class MovieController {
 	
 	@GetMapping("/{movieId}")
 	public ResponseEntity<MovieDto> getMovieHandler(@PathVariable Integer movieId){
+		
 		return new ResponseEntity<>(movieService.getMovie(movieId), HttpStatus.OK);
 	}
 	

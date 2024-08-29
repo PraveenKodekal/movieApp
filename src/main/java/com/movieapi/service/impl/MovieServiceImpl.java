@@ -14,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.movieapi.dto.MovieDto;
 import com.movieapi.entity.Movies;
+import com.movieapi.exception.FileAlreadyExistsException;
+import com.movieapi.exception.MovieNotFoundException;
 import com.movieapi.repo.MovieRepository;
 import com.movieapi.service.FileService;
 import com.movieapi.service.MovieService;
@@ -46,7 +48,7 @@ public class MovieServiceImpl implements MovieService {
 	public MovieDto addMovie(MovieDto movieDto, MultipartFile file) throws IOException {
 		 // 1.upload the file
 		if(Files.exists(Paths.get(path+File.separator+file.getOriginalFilename()))) {
-			throw new RuntimeException("File Already Exists!, please upload another file");
+			throw new FileAlreadyExistsException("File Already Exists!, please upload another file");
 		}
 		String uplodedFile=fileService.uploadFile(path, file);
 		
@@ -88,7 +90,7 @@ public class MovieServiceImpl implements MovieService {
 	@Override
 	public MovieDto getMovie(Integer movieId) {
 		// check teh data in db exists or not for given Id
-		Movies movie= movieRepo.findById(movieId).orElseThrow(()-> new RuntimeException("Movie Not Found Exception"));
+		Movies movie= movieRepo.findById(movieId).orElseThrow(()-> new MovieNotFoundException("Movie Not Found with id : "+ movieId));
 		
 		// 2.generate posterUrl
 		String posterUrl=baseUrl+"/file/"+ movie.getPoster();
@@ -141,7 +143,7 @@ public class MovieServiceImpl implements MovieService {
 		// check movie object exists with given Id
 		
 		Movies movie= movieRepo.findById(movieId)
-				.orElseThrow(()-> new RuntimeException("Movie Not Found Exception"));
+				.orElseThrow(()-> new MovieNotFoundException("Movie Not Found with id : "+ movieId));
 
 		
 		// if object is null,  do nothing
@@ -200,7 +202,7 @@ public class MovieServiceImpl implements MovieService {
 
 
 		// if exists in db
-		Movies movie= movieRepo.findById(movieId).orElseThrow(()-> new RuntimeException("Movie Not Found Exception"));
+		Movies movie= movieRepo.findById(movieId).orElseThrow(()-> new MovieNotFoundException("Movie Not Found with id : "+ movieId));
 		Integer id=movie.getMovieId();
 		
 		// delete the file if exists
