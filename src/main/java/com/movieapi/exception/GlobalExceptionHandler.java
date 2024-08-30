@@ -25,4 +25,21 @@ public class GlobalExceptionHandler {
 		return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
 	}
 	
+	@ExceptionHandler(UserNotFoundException.class)
+	public ProblemDetail handleUserNotFoundException(UserNotFoundException ex) {
+		return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+	}
+	
+	
+	@ExceptionHandler(RefreshTokenNotFoundException.class)
+	public ProblemDetail handleRefreshTokenNotFoundException(UserNotFoundException ex) {
+		return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+	}
+	
+	
+	
+	@ExceptionHandler(RefreshTokenExpiredException.class)
+	public ProblemDetail handleRefreshTokenExpiredException(UserNotFoundException ex) {
+		return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+	}
 }
