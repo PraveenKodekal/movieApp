@@ -42,4 +42,9 @@ public class GlobalExceptionHandler {
 	public ProblemDetail handleRefreshTokenExpiredException(UserNotFoundException ex) {
 		return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
 	}
+	
+	@ExceptionHandler(OtpIsNotValidException.class)
+	public ProblemDetail handleOtpIsNotValidException(OtpIsNotValidException ex) {
+		return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+	}
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.movieapi.auth.entity.RefreshToken;
 import com.movieapi.auth.entity.User;
+import com.movieapi.auth.repo.UserRepository;
 import com.movieapi.auth.service.AuthService;
 import com.movieapi.auth.service.JwtService;
 import com.movieapi.auth.service.RefreshTokenService;
@@ -27,17 +28,21 @@ public class AuthController {
 	
 	private final JwtService jwtService;
 	
+	private final UserRepository userRepo;
+	
 
 	public AuthController(AuthService authService, RefreshTokenService refreshService
-			,JwtService jwtService) {
+			,JwtService jwtService, UserRepository userRepo) {
 		super();
 		this.authService = authService;
 		this.refreshService=refreshService;
 		this.jwtService=jwtService;
+		this.userRepo=userRepo;
 	}
 
 	@PostMapping("/register")
 	public ResponseEntity<AuthResponse> handleregister(@RequestBody RegisterRequest request){
+		
 		return ResponseEntity.ok(authService.register(request));
 	}
 	

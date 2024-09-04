@@ -1,4 +1,4 @@
-package com.movieapi.controller;
+ package com.movieapi.controller;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -21,45 +21,32 @@ import lombok.RequiredArgsConstructor;
 public class AuthService {
 
 	private final PasswordEncoder passwordEncoder;
-    private final UserRepository userRepository;
-    private final JwtService jwtService;
-    private final RefreshTokenService refreshTokenService;
-    private final AuthenticationManager authenticationManager;
+	private final UserRepository userRepository;
+	private final JwtService jwtService;
+	private final RefreshTokenService refreshTokenService;
+	private final AuthenticationManager authenticationManager;
 
-    public AuthResponse register(RegisterRequest registerRequest) {
-        var user = User.builder()
-                .name(registerRequest.getName())
-                .userEmail(registerRequest.getUserEmail())
-                .userName(registerRequest.getUserName())
-                .password(passwordEncoder.encode(registerRequest.getPassword()))
-                .role(UserRole.USER)
-                .build();
+	public AuthResponse register(RegisterRequest registerRequest) {
+		var user = User.builder().name(registerRequest.getName()).userEmail(registerRequest.getUserEmail())
+				.userName(registerRequest.getUserName()).password(passwordEncoder.encode(registerRequest.getPassword()))
+				.role(UserRole.USER).build();
 
-        User savedUser = userRepository.save(user);
-        var accessToken = jwtService.generateToken(savedUser);
-        var refreshToken = refreshTokenService.createRefreshToken(savedUser.getUserEmail());
+		User savedUser = userRepository.save(user);
+		var accessToken = jwtService.generateToken(savedUser);
+		var refreshToken = refreshTokenService.createRefreshToken(savedUser.getUserEmail());
 
-        return AuthResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken.getRefreshToken())
-                .build();
-    }
+		return AuthResponse.builder().accessToken(accessToken).refreshToken(refreshToken.getRefreshToken()).build();
+	}
 
-    public AuthResponse login(LoginRequest loginRequest) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getUserEmail(),
-                        loginRequest.getPassword()
-                        )
-        );
+	public AuthResponse login(LoginRequest loginRequest) {
+		authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(loginRequest.getUserEmail(), loginRequest.getPassword()));
 
-        var user1 = userRepository.findByUserEmail(loginRequest.getUserEmail()).orElseThrow(() -> new UsernameNotFoundException("User not found!"));
-        var accessToken = jwtService.generateToken(user1);
-        var refreshToken = refreshTokenService.createRefreshToken(loginRequest.getUserEmail());
+		var user1 = userRepository.findByUserEmail(loginRequest.getUserEmail())
+				.orElseThrow(() -> new UsernameNotFoundException("User not found!"));
+		var accessToken = jwtService.generateToken(user1);
+		var refreshToken = refreshTokenService.createRefreshToken(loginRequest.getUserEmail());
 
-        return AuthResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken.getRefreshToken())
-                .build();
-    }
+		return AuthResponse.builder().accessToken(accessToken).refreshToken(refreshToken.getRefreshToken()).build();
+	}
 }
