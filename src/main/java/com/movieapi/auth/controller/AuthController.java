@@ -1,5 +1,7 @@
 package com.movieapi.auth.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +32,8 @@ public class AuthController {
 	
 	private final UserRepository userRepo;
 	
+	private final Logger log= LoggerFactory.getLogger(AuthController.class);
+	
 
 	public AuthController(AuthService authService, RefreshTokenService refreshService
 			,JwtService jwtService, UserRepository userRepo) {
@@ -42,18 +46,22 @@ public class AuthController {
 
 	@PostMapping("/register")
 	public ResponseEntity<AuthResponse> handleregister(@RequestBody RegisterRequest request){
-		
+		log.info("register handler function()", AuthController.class);
 		return ResponseEntity.ok(authService.register(request));
 	}
 	
 	@PostMapping("/login")
 	public ResponseEntity<AuthResponse> handleLogin(@RequestBody LoginRequest request){
+		log.info("login handler function()", AuthController.class);
+
 		return ResponseEntity.ok(authService.login(request));
 	}
 	
 	
 	@PostMapping("/refresh")
 	public ResponseEntity<AuthResponse> refreshToken(@RequestBody RefreshTokenRequest refreshToken){
+		log.info("refreshToken handler function()", AuthController.class);
+
 		
 		RefreshToken token= refreshService.verifyRefreshToken(refreshToken.getRefreshToken());
 		

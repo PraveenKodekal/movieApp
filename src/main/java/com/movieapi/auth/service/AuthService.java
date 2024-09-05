@@ -1,5 +1,7 @@
 package com.movieapi.auth.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,8 +27,13 @@ public class AuthService {
 	private final JwtService jwtService;
 	private final RefreshTokenService refreshTokenService;
 	private final AuthenticationManager authenticationManager;
+	
+	private Logger log=LoggerFactory.getLogger(AuthService.class);
 
 	public AuthResponse register(RegisterRequest registerRequest) {
+		
+		log.info("Register Function() "+ AuthService.class);
+		
 		var user = User.builder().name(registerRequest.getName()).userEmail(registerRequest.getUserEmail())
 				.userName(registerRequest.getUserName()).password(passwordEncoder.encode(registerRequest.getPassword()))
 				.role(UserRole.USER).build();
@@ -34,11 +41,18 @@ public class AuthService {
 		User savedUser = userRepository.save(user);
 		var accessToken = jwtService.generateToken(savedUser);
 		var refreshToken = refreshTokenService.createRefreshToken(savedUser.getUserEmail());
+		
+		log.info("Register Function() ended"+ AuthService.class);
 
 		return AuthResponse.builder().accessToken(accessToken).refreshToken(refreshToken.getRefreshToken()).build();
+
 	}
 
 	public AuthResponse login(LoginRequest loginRequest) {
+		
+		log.info("LoginRequest Function() started"+ AuthService.class);
+
+		
 		authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUserEmail(), loginRequest.getPassword()));
 
@@ -46,6 +60,8 @@ public class AuthService {
 				.orElseThrow(() -> new UsernameNotFoundException("User not found!"));
 		var accessToken = jwtService.generateToken(user1);
 		var refreshToken = refreshTokenService.createRefreshToken(loginRequest.getUserEmail());
+
+		log.info("LoginRequest Function() ended"+ AuthService.class);
 
 		return AuthResponse.builder().accessToken(accessToken).refreshToken(refreshToken.getRefreshToken()).build();
 	}

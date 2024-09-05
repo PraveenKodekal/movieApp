@@ -9,15 +9,21 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.movieapi.service.FileService;
 @Service
 public class FileServiceImpl implements FileService {
+	
+	private Logger log= LoggerFactory.getLogger(FileServiceImpl.class);
 
 	@Override
 	public String uploadFile(String path, MultipartFile file) throws IOException {
+		
+		log.info("upload File service Function()", FileServiceImpl.class);
 		//Get the file name
 		String fileName=file.getOriginalFilename();
 		
@@ -38,6 +44,9 @@ public class FileServiceImpl implements FileService {
 
 	@Override
 	public InputStream getResourceFile(String path, String fileName) throws FileNotFoundException {
+		
+		log.info("getResourceFile service Function()", FileServiceImpl.class);
+
 
 		String filePath=path + File.separator+fileName;
 		return new FileInputStream(filePath);

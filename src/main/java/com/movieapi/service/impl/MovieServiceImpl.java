@@ -8,6 +8,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -38,6 +40,8 @@ public class MovieServiceImpl implements MovieService {
 	@Value("${base.url}")
 	private String baseUrl;
 	
+	private Logger log=LoggerFactory.getLogger(MovieServiceImpl.class);
+	
 	
 	
 
@@ -51,7 +55,7 @@ public class MovieServiceImpl implements MovieService {
 
 	@Override
 	public MovieDto addMovie(MovieDto movieDto, MultipartFile file) throws IOException {
-		 // 1.upload the file
+		log.info("addMovie Service Function() ", MovieServiceImpl.class);		 // 1.upload the file
 		if(Files.exists(Paths.get(path+File.separator+file.getOriginalFilename()))) {
 			throw new FileAlreadyExistsException("File Already Exists!, please upload another file");
 		}
@@ -94,6 +98,7 @@ public class MovieServiceImpl implements MovieService {
 
 	@Override
 	public MovieDto getMovie(Integer movieId) {
+
 		// check teh data in db exists or not for given Id
 		Movies movie= movieRepo.findById(movieId).orElseThrow(()-> new MovieNotFoundException("Movie Not Found with id : "+ movieId));
 		
@@ -118,6 +123,8 @@ public class MovieServiceImpl implements MovieService {
 
 	@Override
 	public List<MovieDto> listOfMovies() {
+		log.info("All Movie List Service Function()", MovieServiceImpl.class);
+
 		// fetch all data from db
 		List<Movies> movies=movieRepo.findAll();
 		List<MovieDto> movieDtos= new ArrayList<>();
@@ -146,7 +153,8 @@ public class MovieServiceImpl implements MovieService {
 	@Override
 	public MovieDto updateMovie(Integer movieId, MovieDto movieDto, MultipartFile file) throws IOException {
 		// check movie object exists with given Id
-		
+		log.info("updateMovie  Service Function()", MovieServiceImpl.class);
+
 		Movies movie= movieRepo.findById(movieId)
 				.orElseThrow(()-> new MovieNotFoundException("Movie Not Found with id : "+ movieId));
 
@@ -205,6 +213,8 @@ public class MovieServiceImpl implements MovieService {
 	public String deleteMovies(Integer movieId) throws IOException {
 
 
+		log.info("deleteMovie Service Function()", MovieServiceImpl.class);
+
 
 		// if exists in db
 		Movies movie= movieRepo.findById(movieId).orElseThrow(()-> new MovieNotFoundException("Movie Not Found with id : "+ movieId));
@@ -224,6 +234,9 @@ public class MovieServiceImpl implements MovieService {
 
 	@Override
 	public MoviePageResponse getAllMoviePagination(Integer pageNumber, Integer pageSize) {
+		
+		log.info("getMoviesWithPagination Service Function()", MovieServiceImpl.class);
+
 
 		Pageable pageable=PageRequest.of(pageNumber, pageSize);
 		
@@ -260,6 +273,9 @@ public class MovieServiceImpl implements MovieService {
 	@Override
 	public MoviePageResponse getAllMoviePaginationAndsorting(Integer pageNumber, Integer pageSize, String sortBy,
 			String dir) {
+		
+		log.info("getMoviewithPagination And Sorting Service Function()", MovieServiceImpl.class);
+
 		
 		Sort sort= dir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending()
 													:Sort.by(sortBy).descending();

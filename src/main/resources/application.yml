@@ -35,4 +35,6 @@ project:
 base:
   url: "http://localhost:8080/"
       
-    
+logging :
+  file :
+    name: app.log

@@ -3,6 +3,8 @@ package com.movieapi.controller;
 import java.io.IOException;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +36,7 @@ public class MovieController {
 	
 	
 	private final MovieServiceImpl movieService;
+	private final Logger logger=LoggerFactory.getLogger(MovieController.class);
 
 	public MovieController(MovieServiceImpl movieService) {
 		super();
@@ -44,6 +47,7 @@ public class MovieController {
 	@PostMapping("/addMovie")
 	public ResponseEntity<MovieDto> addMovieHandler(@RequestPart MultipartFile file,
 													@RequestPart String movieDto) throws IOException, EmptyFileException{
+		logger.info("add Movie Handler() , started");
 		
 		if(file.isEmpty()) {
 			throw new EmptyFileException("File is Empty, upload new file");
@@ -51,6 +55,8 @@ public class MovieController {
 		
 		// convert String to json
 		MovieDto dto= convertToMovieDto(movieDto);
+		
+		logger.info("add Movie Handler() , ended");
 		return new ResponseEntity<>(movieService.addMovie(dto, file),HttpStatus.CREATED);
 		
 	}
@@ -58,13 +64,14 @@ public class MovieController {
 	
 	@GetMapping("/{movieId}")
 	public ResponseEntity<MovieDto> getMovieHandler(@PathVariable Integer movieId){
-		
+		logger.info("get movie By Id function");
 		return new ResponseEntity<>(movieService.getMovie(movieId), HttpStatus.OK);
 	}
 	
 
 	@GetMapping("/movieList")
 	public ResponseEntity<List<MovieDto>> getAllMovieHandler(){
+		logger.info("All Movies List function");
 		return new ResponseEntity<>(movieService.listOfMovies(), HttpStatus.OK);
 	}
 	
@@ -73,11 +80,18 @@ public class MovieController {
 	public ResponseEntity<MovieDto> getUpdateHandler(@PathVariable Integer movieId,
 													@RequestPart MultipartFile file,
 													@RequestPart String movieDtoObj) throws IOException{
-		if(file.isEmpty())	file=null;
 		
+		logger.info("update Movie Function started");
+		if(file.isEmpty()) {
+			
+		logger.info("File is Empty while updating movie function()");
+			file=null;
+		}
 		
 		
 		MovieDto movieDto=convertToMovieDto(movieDtoObj);
+		logger.info("update Movie Function ended");
+
 		return ResponseEntity.ok(movieService.updateMovie(movieId, movieDto, file));
 	}
 	
@@ -85,14 +99,16 @@ public class MovieController {
 	@DeleteMapping("/delete/{movieId}")
 	public ResponseEntity<String> deleteMovieHandler(@PathVariable Integer movieId) throws IOException{
 		
-		
+		logger.info("delete Movie Function()");
+
 		return ResponseEntity.ok(movieService.deleteMovies(movieId)) ;
 	}
 	
 	@GetMapping("/allMoviePage")
 	public ResponseEntity<MoviePageResponse> getMoviesPagination(@RequestParam(defaultValue=AppConstants.PAGE_NUMBER, required=false) Integer pageNumber,
 																@RequestParam(defaultValue=AppConstants.PAGE_SIZE, required=false) Integer pageSize) {
-		
+		logger.info("All Movies with pagination Movie Function started");
+
 		
 		
 		return ResponseEntity.ok(movieService.getAllMoviePagination(pageNumber, pageSize));
@@ -105,7 +121,8 @@ public class MovieController {
 																@RequestParam(defaultValue=AppConstants.SORT_DIR) String dir) {
 		
 		
-		
+		logger.info("All MOvies with sorting Movie Function started");
+
 		return ResponseEntity.ok(movieService.getAllMoviePaginationAndsorting(pageNumber, pageSize,sortBy, dir));
 	}
 	
@@ -116,7 +133,11 @@ public class MovieController {
 	//To convert dto object as json object
 	private MovieDto convertToMovieDto(String MovieDtoToObj) throws JsonMappingException, JsonProcessingException {
 		//MovieDto movieDto=new MovieDto();
+		logger.info("json convertion  started");
+
 		ObjectMapper objectMapper= new ObjectMapper();
+		logger.info("jason convertion Function ended");
+
 		return objectMapper.readValue(MovieDtoToObj, MovieDto.class);
 		
 	}

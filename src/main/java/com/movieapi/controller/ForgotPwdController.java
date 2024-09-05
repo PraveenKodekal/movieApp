@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Random;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,6 +38,8 @@ public class ForgotPwdController {
 	
 	private final PasswordEncoder pwdEncoder;
 	
+	private Logger log= LoggerFactory.getLogger(ForgotPwdController.class);
+	
 	
 
 	public ForgotPwdController(UserRepository userRepo, EmailServices emailService, ForgotPwdRepo forgotPwdRepo,
@@ -52,6 +56,7 @@ public class ForgotPwdController {
 	@PostMapping("/verifyEmail/{email}")
 	public ResponseEntity<String> verifyEmail(@PathVariable String email) {
 
+		log.info("verifyEmail Handler function()", ForgotPwdController.class);
 		User user = userRepo.findByUserEmail(email).orElseThrow(() -> new UserNotFoundException(email));
 
 		int otp = otpGenerator();
@@ -72,6 +77,8 @@ public class ForgotPwdController {
 	// Enter OTP
 	@PostMapping("/verifyOtp/{otp}/{email}")
 	public ResponseEntity<String> verifyOtp(@PathVariable Integer otp, @PathVariable String email) {
+
+		log.info("verifyOtp Handler function()", ForgotPwdController.class);
 
 		User user = userRepo.findByUserEmail(email).orElseThrow(() -> new UserNotFoundException(email));
 
@@ -96,6 +103,8 @@ public class ForgotPwdController {
 	@PostMapping("/resetPwd/{emial}")
 	public ResponseEntity<String> changePwdHandler(@RequestBody ChangePassword changePwd,
 			@PathVariable String email){
+		log.info("changePassword Handler function()", ForgotPwdController.class);
+
 		// password entered from the user and reenter password should be same
 		if(!Objects.equals(changePwd.password(), changePwd.repeatPassword())) {
 			return new ResponseEntity<>("Please enter the pwd again", HttpStatus.EXPECTATION_FAILED);
@@ -106,7 +115,7 @@ public class ForgotPwdController {
 		
 		String encodedPwd= pwdEncoder.encode(changePwd.password());
 		userRepo.updatePassword(email, encodedPwd);
-		return  ResponseEntity.ok("Pssword has been updated Successfully");
+		return  ResponseEntity.ok("Passsword has been updated Successfully");
 	}
 	
 	

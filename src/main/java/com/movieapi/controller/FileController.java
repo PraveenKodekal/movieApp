@@ -3,6 +3,8 @@
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -25,6 +27,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class FileController {
 	
 	private final FileServiceImpl fileService;
+	private Logger log= LoggerFactory.getLogger(FileController.class);
 
 	public FileController(FileServiceImpl fileService) {
 		this.fileService = fileService;
@@ -35,6 +38,7 @@ public class FileController {
 
 	@PostMapping("/upload")
 	public ResponseEntity<String> uploadFile(@RequestPart MultipartFile file) throws IOException {
+		log.info("upload File Handler Function()", FileController.class);
 		String uploadedFile = fileService.uploadFile(path, file);
 		return ResponseEntity.ok("fileUploaded : " + uploadedFile);
 
@@ -42,6 +46,7 @@ public class FileController {
 
 	@GetMapping("/{fileName}")
 	public void serveFileHandler(@PathVariable String fileName, HttpServletResponse response) throws IOException {
+		log.info("serve File Handler function()", FileController.class);
 		InputStream resourceFile = fileService.getResourceFile(path, fileName);
 		response.setContentType(MediaType.IMAGE_PNG_VALUE);
 		StreamUtils.copy(resourceFile, response.getOutputStream());
