@@ -11,9 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.movieapi.auth.entity.User;
 import com.movieapi.auth.repo.UserRepository;
-import com.movieapi.exception.UserNotFoundException;
 
 @Configuration
 public class ApplicationConfig {

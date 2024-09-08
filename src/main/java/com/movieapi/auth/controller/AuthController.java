@@ -3,7 +3,6 @@ package com.movieapi.auth.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,18 +29,16 @@ public class AuthController {
 	
 	private final JwtService jwtService;
 	
-	private final UserRepository userRepo;
 	
 	private final Logger log= LoggerFactory.getLogger(AuthController.class);
 	
 
 	public AuthController(AuthService authService, RefreshTokenService refreshService
-			,JwtService jwtService, UserRepository userRepo) {
+			,JwtService jwtService) {
 		super();
 		this.authService = authService;
 		this.refreshService=refreshService;
 		this.jwtService=jwtService;
-		this.userRepo=userRepo;
 	}
 
 	@PostMapping("/register")
@@ -49,24 +46,17 @@ public class AuthController {
 		log.info("register handler function()", AuthController.class);
 		return ResponseEntity.ok(authService.register(request));
 	}
-	
 	@PostMapping("/login")
 	public ResponseEntity<AuthResponse> handleLogin(@RequestBody LoginRequest request){
 		log.info("login handler function()", AuthController.class);
-
 		return ResponseEntity.ok(authService.login(request));
 	}
 	
-	
 	@PostMapping("/refresh")
 	public ResponseEntity<AuthResponse> refreshToken(@RequestBody RefreshTokenRequest refreshToken){
-		log.info("refreshToken handler function()", AuthController.class);
-
-		
+		log.info("refreshToken handler function()", AuthController.class);	
 		RefreshToken token= refreshService.verifyRefreshToken(refreshToken.getRefreshToken());
-		
 		User user= token.getUser();
-		
 		String accessToken= jwtService.generateToken(user);
 		
 		return ResponseEntity.ok(AuthResponse.builder()
